@@ -1,11 +1,8 @@
-/* ========================================================
-   FixTrack Campus - Shared client-side behaviour
-   Vanilla JavaScript, no framework dependencies.
-   ======================================================== */
+/* FixTrack Campus - shared interactions (vanilla JS) */
 (function () {
     'use strict';
 
-    /* ---------- Mobile navigation ---------- */
+    /* Mobile menu */
     var toggle = document.getElementById('navToggle');
     var menu = document.getElementById('navMenu');
     if (toggle && menu) {
@@ -13,233 +10,128 @@
             var open = menu.classList.toggle('show');
             toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         });
-        document.addEventListener('click', function (event) {
-            if (!menu.contains(event.target) && !toggle.contains(event.target)) {
+        document.addEventListener('click', function (e) {
+            if (!menu.contains(e.target) && !toggle.contains(e.target)) {
                 menu.classList.remove('show');
                 toggle.setAttribute('aria-expanded', 'false');
             }
         });
     }
 
-    /* ---------- Confirmation prompts for destructive actions ---------- */
-    document.addEventListener('submit', function (event) {
-        var form = event.target;
-        if (form.tagName !== 'FORM') return;
-        var message = form.getAttribute('data-confirm');
-        if (message && !window.confirm(message)) {
-            event.preventDefault();
-            return;
+    /* Confirmations + double-submit guard */
+    document.addEventListener('click', function (e) {
+        var el = e.target.closest('[data-confirm]');
+        if (el && (el.tagName === 'A' || (el.tagName === 'BUTTON' && el.type === 'submit'))) {
+            if (!window.confirm(el.getAttribute('data-confirm'))) e.preventDefault();
         }
-        // Prevent accidental double submission of state-changing forms.
+    });
+    document.addEventListener('submit', function (e) {
+        var form = e.target;
+        var message = form.getAttribute('data-confirm');
+        if (message && !window.confirm(message)) { e.preventDefault(); return; }
         var submit = form.querySelector('[type="submit"]');
-        if (submit && !form.dataset.noDisable) {
+        if (submit) {
             submit.disabled = true;
             window.setTimeout(function () { submit.disabled = false; }, 4000);
         }
     });
 
-    document.addEventListener('click', function (event) {
-        var confirmEl = event.target.closest('[data-confirm]');
-        if (confirmEl && (confirmEl.tagName === 'A' || (confirmEl.tagName === 'BUTTON' && confirmEl.type === 'submit'))) {
-            var message = confirmEl.getAttribute('data-confirm');
-            if (message && !window.confirm(message)) event.preventDefault();
-        }
-    });
-
-    /* ---------- Auto-dismiss non-error alerts ---------- */
-    window.setTimeout(function () {
-        document.querySelectorAll('.alert-success, .alert-info, .alert-warning').forEach(function (alert) {
-            if (alert.classList.contains('alert-auto')) {
-                alert.style.transition = 'opacity .4s ease';
-                alert.style.opacity = '0';
-                window.setTimeout(function () { alert.remove(); }, 400);
-            }
-        });
-    }, 8000);
-
-    /* ---------- Modal helpers ---------- */
-    window.openModal = function (id) {
-        var modal = document.getElementById(id);
-        if (modal) modal.classList.add('show');
-    };
-    window.closeModal = function (id) {
-        var modal = document.getElementById(id);
-        if (modal) modal.classList.remove('show');
-    };
-    document.addEventListener('click', function (event) {
-        var opener = event.target.closest('[data-modal-open]');
-        if (opener) {
-            event.preventDefault();
-            window.openModal(opener.getAttribute('data-modal-open'));
-        }
-        if (event.target.classList && event.target.classList.contains('modal-backdrop')) {
-            event.target.classList.remove('show');
-        }
-        var closer = event.target.closest('[data-modal-close]');
-        if (closer) {
-            event.preventDefault();
-            var backdrop = closer.closest('.modal-backdrop');
-            if (backdrop) backdrop.classList.remove('show');
-        }
-    });
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
-            document.querySelectorAll('.modal-backdrop.show').forEach(function (m) { m.classList.remove('show'); });
-        }
-    });
-
-    /* ---------- Image upload dropzone with live previews ---------- */
-    var MAX_FILES = 5;
-    var MAX_BYTES = 5 * 1024 * 1024;
+    /* Photo previews */
     var ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
-
     document.querySelectorAll('.dropzone-box').forEach(function (zone) {
         var input = zone.querySelector('input[type="file"]');
         if (!input) return;
         var preview = zone.parentElement.querySelector('.preview-container');
         var errorBox = zone.parentElement.querySelector('[data-upload-error]');
-        var store = (typeof DataTransfer !== 'undefined') ? new DataTransfer() : null;
-
-        // Keep a copy of initially selected files so re-rendering does not lose them.
         var selected = [];
+        var store = typeof DataTransfer !== 'undefined' ? new DataTransfer() : null;
 
-        function reportError(msg) {
-            if (errorBox) { errorBox.textContent = msg; errorBox.classList.remove('d-none'); }
+        function showError(msg) {
+            if (!errorBox) return;
+            errorBox.textContent = msg;
+            errorBox.classList.remove('d-none');
         }
-        function clearError() {
-            if (errorBox) { errorBox.textContent = ''; errorBox.classList.add('d-none'); }
-        }
-
         function render() {
             if (!preview) return;
             preview.innerHTML = '';
-            selected.forEach(function (file, index) {
+            selected.forEach(function (file, i) {
                 var thumb = document.createElement('div');
                 thumb.className = 'image-preview-thumb';
                 var img = document.createElement('img');
                 img.src = URL.createObjectURL(file);
-                img.alt = 'Preview of ' + file.name;
+                img.alt = file.name;
                 var remove = document.createElement('button');
                 remove.type = 'button';
                 remove.className = 'remove-img-btn';
-                remove.setAttribute('aria-label', 'Remove ' + file.name);
                 remove.innerHTML = '&times;';
-                remove.addEventListener('click', function () {
-                    selected.splice(index, 1);
-                    syncInput();
-                    render();
-                });
+                remove.onclick = function () { selected.splice(i, 1); sync(); render(); };
                 thumb.appendChild(img);
                 thumb.appendChild(remove);
                 preview.appendChild(thumb);
             });
         }
-
-        function syncInput() {
+        function sync() {
             if (!store) return;
             store.items.clear();
-            selected.forEach(function (file) { store.items.add(file); });
+            selected.forEach(function (f) { store.items.add(f); });
             input.files = store.files;
         }
-
         input.addEventListener('change', function () {
-            clearError();
-            var incoming = Array.prototype.slice.call(input.files || []);
-            incoming.forEach(function (file) {
-                if (ALLOWED.indexOf(file.type) === -1) {
-                    reportError('Only JPG, PNG and WebP images are allowed.');
-                    return;
-                }
-                if (file.size > MAX_BYTES) {
-                    reportError('Each image must be smaller than 5 MB.');
-                    return;
-                }
-                if (selected.length >= MAX_FILES) {
-                    reportError('You can attach a maximum of ' + MAX_FILES + ' images.');
-                    return;
-                }
-                selected.push(file);
+            var error = '';
+            Array.prototype.slice.call(input.files || []).forEach(function (file) {
+                if (ALLOWED.indexOf(file.type) === -1) error = 'Only JPG, PNG and WebP are allowed.';
+                else if (file.size > 5 * 1024 * 1024) error = 'Each image must be under 5 MB.';
+                else if (selected.length >= 5) error = 'Maximum 5 images.';
+                else selected.push(file);
             });
-            syncInput();
+            if (error) showError(error);
+            else if (errorBox) errorBox.classList.add('d-none');
+            sync();
             render();
         });
-
-        zone.addEventListener('click', function (e) {
-            if (e.target !== input) input.click();
-        });
-
-        ['dragenter', 'dragover'].forEach(function (type) {
-            zone.addEventListener(type, function (e) { e.preventDefault(); zone.classList.add('dragover'); });
-        });
-        ['dragleave', 'drop'].forEach(function (type) {
-            zone.addEventListener(type, function (e) { e.preventDefault(); zone.classList.remove('dragover'); });
-        });
+        zone.addEventListener('click', function () { input.click(); });
+        zone.addEventListener('dragover', function (e) { e.preventDefault(); zone.classList.add('dragover'); });
+        zone.addEventListener('dragleave', function () { zone.classList.remove('dragover'); });
         zone.addEventListener('drop', function (e) {
-            var dropped = Array.prototype.slice.call(e.dataTransfer.files || []);
-            if (!dropped.length) return;
+            e.preventDefault();
+            zone.classList.remove('dragover');
             input.files = e.dataTransfer.files;
             input.dispatchEvent(new Event('change'));
         });
     });
 
-    /* ---------- Duplicate-report warning ( AJAX ) ---------- */
-    var titleInput = document.getElementById('issue_title');
-    if (titleInput) {
-        var timer;
+    /* Duplicate-report hint */
+    var title = document.getElementById('issue_title');
+    if (title) {
         var warning = document.getElementById('duplicate-warning');
-        titleInput.addEventListener('input', function () {
+        var timer;
+        title.addEventListener('input', function () {
             window.clearTimeout(timer);
-            var value = titleInput.value.trim();
-            if (value.length < 8) { if (warning) warning.classList.add('d-none'); return; }
+            if (title.value.trim().length < 8) { warning.classList.add('d-none'); return; }
             timer = window.setTimeout(function () {
-                fetch('api/duplicate-check.php?q=' + encodeURIComponent(value), { headers: { 'X-Requested-With': 'fetch' } })
+                fetch('api/duplicate-check.php?q=' + encodeURIComponent(title.value.trim()))
                     .then(function (r) { return r.ok ? r.json() : null; })
                     .then(function (data) {
-                        if (!warning || !data) return;
-                        if (data.duplicates && data.duplicates.length) {
-                            warning.innerHTML = '<i class="fas fa-triangle-exclamation mr-2"></i><strong>Possible duplicate:</strong> '
-                                + data.duplicates.map(function (d) {
-                                    return '<a href="' + d.url + '" target="_blank" rel="noopener">' + d.code + ' &ndash; ' + d.title + '</a>';
-                                }).join(', ') + '. Please check before submitting.';
-                            warning.classList.remove('d-none');
-                        } else {
-                            warning.classList.add('d-none');
-                        }
+                        if (!data || !data.duplicates.length) { warning.classList.add('d-none'); return; }
+                        warning.innerHTML = '<strong>Possible duplicate:</strong> ' + data.duplicates.map(function (d) {
+                            return '<a href="' + d.url + '" target="_blank" rel="noopener">' + d.code + '</a>';
+                        }).join(', ');
+                        warning.classList.remove('d-none');
                     })
-                    .catch(function () { /* silently ignore network errors */ });
+                    .catch(function () {});
             }, 500);
         });
     }
 
-    /* ---------- Live category/facility dependent hints ---------- */
-    var categorySelect = document.getElementById('category_id');
-    if (categorySelect) {
-        categorySelect.addEventListener('change', function () {
-            var opt = categorySelect.options[categorySelect.selectedIndex];
-            var hint = document.getElementById('sla-hint');
-            var priority = document.getElementById('priority');
-            if (hint && opt && opt.dataset.sla) {
-                hint.textContent = 'Target response time for this category: ' + opt.dataset.sla + ' hours.';
-            }
-            if (priority && opt && opt.dataset.priority) {
-                // Only auto-select if the user has not deliberately changed it.
-                if (!priority.dataset.touched) priority.value = opt.dataset.priority;
-            }
-        });
-        categorySelect.addEventListener('change', function () { /* placeholder for future rules */ });
-        var prio = document.getElementById('priority');
-        if (prio) prio.addEventListener('change', function () { prio.dataset.touched = '1'; });
-    }
-
-    /* ---------- Simple client-side table search ---------- */
-    document.querySelectorAll('[data-table-search]').forEach(function (input) {
-        var target = document.getElementById(input.getAttribute('data-table-search'));
-        if (!target) return;
-        input.addEventListener('input', function () {
-            var term = input.value.toLowerCase().trim();
-            target.querySelectorAll('tbody tr').forEach(function (row) {
-                row.style.display = row.textContent.toLowerCase().indexOf(term) !== -1 ? '' : 'none';
-            });
-        });
+    /* Category -> default priority / SLA hint */
+    var category = document.getElementById('category_id');
+    if (category) category.addEventListener('change', function () {
+        var opt = category.options[category.selectedIndex];
+        var hint = document.getElementById('sla-hint');
+        var priority = document.getElementById('priority');
+        if (hint && opt.dataset.sla) hint.textContent = 'Target response: ' + opt.dataset.sla + ' hours.';
+        if (priority && opt.dataset.priority && !priority.dataset.touched) priority.value = opt.dataset.priority;
     });
+    var priorityField = document.getElementById('priority');
+    if (priorityField) priorityField.addEventListener('change', function () { priorityField.dataset.touched = '1'; });
 })();

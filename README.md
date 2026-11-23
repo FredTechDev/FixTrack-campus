@@ -21,7 +21,7 @@ A full-stack **Campus Facilities & Maintenance Management System** built with pl
 - Review, approve or reject reports (rejection requires an explanation).
 - Assign or reassign technicians, set priorities and response deadlines.
 - Manage students, technicians, facilities and issue categories.
-- Analytics dashboard: status donut, monthly trend, priority/category/facility breakdowns, technician workload, SLA compliance, satisfaction score and average resolution time.
+- Analytics dashboard: simple status counts, category bars, average resolution time and verification totals.
 - Filter all reports and export the result to CSV.
 - Printable QR codes for every facility that open a pre-filled report form.
 
@@ -119,11 +119,7 @@ docker compose logs -f db
 |---|---|---|
 | Administrator | `admin@fixtrack.campus` | `Admin@123` |
 | Technician (electrical) | `tech.electrical@fixtrack.campus` | `Tech@123` |
-| Technician (plumbing) | `tech.plumbing@fixtrack.campus` | `Tech@123` |
-| Technician (network) | `tech.network@fixtrack.campus` | `Tech@123` |
 | Student | `alice.student@fixtrack.campus` | `Student@123` |
-| Student | `brian.student@fixtrack.campus` | `Student@123` |
-| Student | `claire.student@fixtrack.campus` | `Student@123` |
 
 You can also register a new student account from `register.php`.
 
@@ -173,6 +169,7 @@ fixtrack-campus/
 ├── export.php                     # Role-scoped CSV export
 ├── index.php / login.php / register.php / logout.php / dashboard.php
 ├── Dockerfile / docker-compose.yml
+├── ARCHITECTURE.md                # Modularity, module map, request flows
 ├── TESTING.md                     # Test cases (success + failure)
 └── README.md
 ```
@@ -195,7 +192,7 @@ fixtrack-campus/
 
 Relationships use `InnoDB` foreign keys with `CASCADE` / `RESTRICT` / `SET NULL` as appropriate. Indexes cover tracking code, status, priority, dates, user/role and report history.
 
-`database.sql` drops existing tables, recreates them and inserts 7 users, 6 facilities, 8 categories, 8 example reports, 4 assignments, status history, verifications and notifications.
+`database.sql` drops existing tables, recreates them and inserts **minimal** sample data: 3 users, 2 facilities, all 8 categories, 3 reports, 2 assignments, status history and notifications.
 
 ---
 
@@ -241,6 +238,8 @@ http://localhost:8085/student/report-new.php?facility=3
 ---
 
 ## 11. Testing
+
+For how the code is split into modules and why, see **[ARCHITECTURE.md](ARCHITECTURE.md)**.
 
 See **[TESTING.md](TESTING.md)** for a detailed matrix of successful and unsuccessful test cases, plus an automated smoke script in `tests/smoke_test.sh`.
 

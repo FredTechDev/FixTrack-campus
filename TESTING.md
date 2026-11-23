@@ -87,7 +87,7 @@ An executable subset lives in [`tests/smoke_test.sh`](tests/smoke_test.sh).
 | D1 | Student dashboard counters | Totals match DB queries | PASS |
 | D2 | Admin dashboard counters | Totals, unassigned, active, overdue, resolved, awaiting-close match | PASS |
 | D3 | Technician dashboard counters | Assigned/pending/active/completed match assignments | PASS |
-| D4 | Analytics donut + bars | Render from live aggregates; no PHP errors | PASS |
+| D4 | Analytics counts + bars | Render from live aggregates; no PHP errors | PASS |
 | D5 | Search/filter reports | Status/category/priority/facility/technician/keyword filters combine correctly | PASS |
 | D6 | Overdue-only filter | Returns only active reports past deadline | PASS |
 | D7 | Pagination | Page links preserve filters | PASS |
