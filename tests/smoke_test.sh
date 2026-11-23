@@ -34,7 +34,7 @@ check_page() {
         fail "$path (HTTP $code)"
         return
     fi
-    if grep -qiE 'fatal error|parse error|<b>warning:</b>|<b>notice:</b>|<b>deprecated:</b>' "$body"; then
+    if grep -qiE '<b>(fatal error|parse error|warning|notice|deprecated)</b>' "$body"; then
         fail "$path (PHP error in output)"
         return
     fi
