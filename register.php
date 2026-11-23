@@ -99,14 +99,14 @@ include __DIR__ . '/includes/header.php';
                 <label class="form-label" for="full_name">Full name <span class="required">*</span></label>
                 <input class="form-control" type="text" id="full_name" name="full_name" required
                        data-min="2" data-max="100" data-label="Full name"
-                       value="<?= e($old['full_name']) ?>" placeholder="e.g. Alice Walker" autocomplete="name">
+                       value="<?= e($old['full_name']) ?>" placeholder="e.g. Wanjiku Kamau" autocomplete="name">
                 <div class="invalid-feedback"></div>
             </div>
             <div class="form-group">
                 <label class="form-label" for="email">Email address <span class="required">*</span></label>
                 <input class="form-control" type="email" id="email" name="email" required
                        data-type="email" data-label="Email address"
-                       value="<?= e($old['email']) ?>" placeholder="you@university.edu" autocomplete="email">
+                       value="<?= e($old['email']) ?>" placeholder="you@university.ac.ke" autocomplete="email">
                 <div class="invalid-feedback"></div>
             </div>
             <div class="form-row">

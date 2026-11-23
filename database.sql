@@ -160,9 +160,9 @@ CREATE TABLE repair_verifications (
 -- Passwords: Admin@123 / Tech@123 / Student@123
 -- --------------------------------------------------------
 INSERT INTO users (id, full_name, email, password_hash, role, phone, identifier, specialization) VALUES
-(1, 'Admin User', 'admin@fixtrack.campus', '$2y$10$cFZ/lq6v1OW7YODjcQgSG.8TB.19VPbYqmpLUbvDReuFxMrTCjuOu', 'admin', NULL, 'ADM-001', NULL),
-(2, 'Sam Tech', 'tech.electrical@fixtrack.campus', '$2y$10$0gfPWphPGO/zm/R9UDxHfeR8tFzTbvFFQMhkI0cb0KXkY127lDXpi', 'technician', NULL, 'TECH-001', 'Electrical'),
-(3, 'Alice Student', 'alice.student@fixtrack.campus', '$2y$10$CZEcPD/kZQZsg8IZYPPjPeuxngtU/LF/RpuNNdIwP.0tzfoO9ul9y', 'student', NULL, 'STU-2024-1049', NULL);
+(1, 'Mercy Wanjiku', 'admin@fixtrack.campus', '$2y$10$cFZ/lq6v1OW7YODjcQgSG.8TB.19VPbYqmpLUbvDReuFxMrTCjuOu', 'admin', NULL, 'ADM-001', NULL),
+(2, 'David Kiptoo', 'tech.electrical@fixtrack.campus', '$2y$10$0gfPWphPGO/zm/R9UDxHfeR8tFzTbvFFQMhkI0cb0KXkY127lDXpi', 'technician', NULL, 'TECH-001', 'Electrical & Power Systems'),
+(3, 'Achieng Otieno', 'achieng.student@fixtrack.campus', '$2y$10$CZEcPD/kZQZsg8IZYPPjPeuxngtU/LF/RpuNNdIwP.0tzfoO9ul9y', 'student', NULL, 'STU-2024-1049', NULL);
 
 INSERT INTO facilities (id, name, building_code, campus_zone, description, total_floors) VALUES
 (1, 'Engineering Block', 'ENG-B1', 'Engineering Quad', 'Lecture halls and labs', 3),
@@ -190,14 +190,14 @@ INSERT INTO assignments (id, report_id, technician_id, assigned_by, assignment_n
 INSERT INTO status_history (report_id, changed_by, old_status, new_status, notes, created_at) VALUES
 (1, 3, NULL, 'REPORTED', 'Issue reported.', DATE_SUB(NOW(), INTERVAL 1 DAY)),
 (1, 1, 'REPORTED', 'APPROVED', 'Confirmed electrical hazard.', DATE_SUB(NOW(), INTERVAL 22 HOUR)),
-(1, 1, 'APPROVED', 'ASSIGNED', 'Assigned to Sam Tech.', DATE_SUB(NOW(), INTERVAL 20 HOUR)),
+(1, 1, 'APPROVED', 'ASSIGNED', 'Assigned to David Kiptoo.', DATE_SUB(NOW(), INTERVAL 20 HOUR)),
 (1, 2, 'ASSIGNED', 'IN PROGRESS', 'Power isolated at the distribution board.', DATE_SUB(NOW(), INTERVAL 18 HOUR)),
 (2, 3, NULL, 'REPORTED', 'Issue reported.', DATE_SUB(NOW(), INTERVAL 2 DAY)),
-(2, 1, 'REPORTED', 'ASSIGNED', 'Assigned to Sam Tech.', DATE_SUB(NOW(), INTERVAL 2 DAY)),
+(2, 1, 'REPORTED', 'ASSIGNED', 'Assigned to David Kiptoo.', DATE_SUB(NOW(), INTERVAL 2 DAY)),
 (2, 2, 'ASSIGNED', 'RESOLVED', 'LED driver replaced and tested.', DATE_SUB(NOW(), INTERVAL 6 HOUR)),
 (3, 3, NULL, 'REPORTED', 'Issue reported.', DATE_SUB(NOW(), INTERVAL 2 HOUR));
 
 INSERT INTO notifications (user_id, report_id, title, message, type, is_read, created_at) VALUES
-(3, 1, 'Work in progress', 'Sam Tech has started work on FTC-2026-10001.', 'status_change', 0, DATE_SUB(NOW(), INTERVAL 18 HOUR)),
+(3, 1, 'Work in progress', 'David Kiptoo has started work on FTC-2026-10001.', 'status_change', 0, DATE_SUB(NOW(), INTERVAL 18 HOUR)),
 (3, 2, 'Repair completed - verification needed', 'Please verify the repair for FTC-2026-10002.', 'verification_needed', 0, DATE_SUB(NOW(), INTERVAL 6 HOUR)),
-(1, 3, 'New report', 'Alice Student submitted FTC-2026-10003 (leaking tap).', 'new_report', 0, DATE_SUB(NOW(), INTERVAL 2 HOUR));
+(1, 3, 'New report', 'Achieng Otieno submitted FTC-2026-10003 (leaking tap).', 'new_report', 0, DATE_SUB(NOW(), INTERVAL 2 HOUR));

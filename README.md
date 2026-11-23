@@ -121,11 +121,11 @@ docker compose logs -f db
 
 ## 5. Demo accounts
 
-| Role | Email | Password |
-|---|---|---|
-| Administrator | `admin@fixtrack.campus` | `Admin@123` |
-| Technician (electrical) | `tech.electrical@fixtrack.campus` | `Tech@123` |
-| Student | `alice.student@fixtrack.campus` | `Student@123` |
+| Role | Name | Email | Password |
+|---|---|---|---|
+| Administrator | Mercy Wanjiku | `admin@fixtrack.campus` | `Admin@123` |
+| Technician (electrical) | David Kiptoo | `tech.electrical@fixtrack.campus` | `Tech@123` |
+| Student | Achieng Otieno | `achieng.student@fixtrack.campus` | `Student@123` |
 
 You can also register a new student account from `register.php`.
 
@@ -227,10 +227,10 @@ Relationships use `InnoDB` foreign keys with `CASCADE` / `RESTRICT` / `SET NULL`
 
 ## 9. Usage walkthrough
 
-1. Sign in as **Alice** (student) → **Report an issue** → fill in the form → submit. Note the tracking code.
-2. Sign in as **admin** → **Reports** → open the new ticket → **Approve** → **Assign technician** (choose e.g. Samuel Sparks).
+1. Sign in as **Achieng** (student) → **Report an issue** → fill in the form → submit. Note the tracking code.
+2. Sign in as **admin** → **Reports** → open the new ticket → **Approve** → **Assign technician** (choose e.g. David Kiptoo).
 3. Sign in as that **technician** → **My Jobs** → open the job → **Mark as in progress** → add notes → **Submit for verification** (optionally attach completion photos).
-4. Back as **Alice** → open the report → **Verify this repair** (rate it) or mark it unsatisfied to reopen.
+4. Back as **Achieng** → open the report → **Verify this repair** (rate it) or mark it unsatisfied to reopen.
 5. As **admin**, close verified reports from the report page.
 6. Explore **Analytics**, **People**, **Facilities**, **Categories**, **QR Codes** and **Export CSV** from the admin navigation.
 7. **Guest:** from the landing page, login page or a QR poster open **Report as Guest**, fill in the form, then save the private link from the receipt. Use that link to follow progress, verify the repair or reopen it — no account needed.

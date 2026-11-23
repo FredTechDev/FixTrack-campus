@@ -49,7 +49,7 @@ check_status() {
 echo "==> Logging in"
 A="$TMP_DIR/admin.cookies"; S="$TMP_DIR/student.cookies"; T="$TMP_DIR/tech.cookies"
 login "$A" 'admin@fixtrack.campus' 'Admin@123'
-login "$S" 'alice.student@fixtrack.campus' 'Student@123'
+login "$S" 'achieng.student@fixtrack.campus' 'Student@123'
 login "$T" 'tech.electrical@fixtrack.campus' 'Tech@123'
 
 echo "==> Public pages"

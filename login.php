@@ -84,7 +84,7 @@ include __DIR__ . '/includes/header.php';
             <div class="form-group">
                 <label class="form-label" for="email">Email address <span class="required">*</span></label>
                 <input class="form-control" type="email" id="email" name="email" required
-                       data-type="email" value="<?= e($email) ?>" autocomplete="username" placeholder="you@campus.edu">
+                       data-type="email" value="<?= e($email) ?>" autocomplete="username" placeholder="you@campus.ac.ke">
                 <div class="invalid-feedback"></div>
             </div>
             <div class="form-group">
@@ -98,9 +98,9 @@ include __DIR__ . '/includes/header.php';
 
         <div class="demo-credentials">
             <strong>Demo accounts</strong>
-            <div><i class="fas fa-user-tie mr-1"></i> Admin: <code>admin@fixtrack.campus</code> / <code>Admin@123</code></div>
-            <div><i class="fas fa-screwdriver-wrench mr-1"></i> Technician: <code>tech.electrical@fixtrack.campus</code> / <code>Tech@123</code></div>
-            <div><i class="fas fa-user-graduate mr-1"></i> Student: <code>alice.student@fixtrack.campus</code> / <code>Student@123</code></div>
+            <div><i class="fas fa-user-tie mr-1"></i> Admin (Mercy Wanjiku): <code>admin@fixtrack.campus</code> / <code>Admin@123</code></div>
+            <div><i class="fas fa-screwdriver-wrench mr-1"></i> Technician (David Kiptoo): <code>tech.electrical@fixtrack.campus</code> / <code>Tech@123</code></div>
+            <div><i class="fas fa-user-graduate mr-1"></i> Student (Achieng Otieno): <code>achieng.student@fixtrack.campus</code> / <code>Student@123</code></div>
         </div>
 
         <div class="auth-alt">

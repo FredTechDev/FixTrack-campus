@@ -11,10 +11,10 @@ An executable subset lives in [`tests/smoke_test.sh`](tests/smoke_test.sh).
 | # | Scenario | Steps | Expected result | Actual |
 |---|---|---|---|---|
 | A1 | Successful admin login | POST `login.php` with `admin@fixtrack.campus` / `Admin@123` | 302 → `dashboard.php` → 302 → `admin/dashboard.php`; welcome flash | PASS |
-| A2 | Successful student login | `alice.student@fixtrack.campus` / `Student@123` | Redirect to `student/dashboard.php` | PASS |
+| A2 | Successful student login | `achieng.student@fixtrack.campus` / `Student@123` | Redirect to `student/dashboard.php` | PASS |
 | A3 | Successful technician login | `tech.electrical@fixtrack.campus` / `Tech@123` | Redirect to `technician/dashboard.php` | PASS |
 | A4 | Wrong password | Any valid email + wrong password | Error "Invalid email or password"; no session created | PASS |
-| A5 | Unknown email | `nobody@example.com` + any password | Same generic error (no user enumeration) | PASS |
+| A5 | Unknown email | `nobody@example.co.ke` + any password | Same generic error (no user enumeration) | PASS |
 | A6 | Inactive account | Admin sets a user inactive, then that user logs in | Error "This account has been deactivated" | PASS |
 | A7 | Registration validation | `register.php` with short name, bad email, weak password, mismatched confirmation | All errors shown; no row inserted | PASS |
 | A8 | Duplicate email registration | Register with an existing email | Error "already registered"; no row inserted | PASS |

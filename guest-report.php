@@ -30,9 +30,9 @@ include __DIR__ . '/includes/header.php';
                 <div class="card-body">
                     <div class="form-row">
                         <div class="form-group"><label class="form-label" for="guest_name">Your name <span class="required">*</span></label>
-                            <input class="form-control" type="text" id="guest_name" name="guest_name" required data-min="2" data-max="100" data-label="Name" placeholder="e.g. Jane Doe"><div class="invalid-feedback"></div></div>
+                            <input class="form-control" type="text" id="guest_name" name="guest_name" required data-min="2" data-max="100" data-label="Name" placeholder="e.g. Wanjiku Kamau"><div class="invalid-feedback"></div></div>
                         <div class="form-group"><label class="form-label" for="guest_email">Email <span class="text-muted small">(optional)</span></label>
-                            <input class="form-control" type="email" id="guest_email" name="guest_email" data-type="email" data-label="Email" placeholder="you@example.com"><div class="invalid-feedback"></div>
+                            <input class="form-control" type="email" id="guest_email" name="guest_email" data-type="email" data-label="Email" placeholder="wanjiku@example.co.ke"><div class="invalid-feedback"></div>
                             <div class="form-hint">Only used by the facilities team if they need to contact you.</div></div>
                     </div>
                 </div>
