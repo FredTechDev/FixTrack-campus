@@ -174,17 +174,14 @@ INSERT INTO categories (id, name, slug, icon, default_priority, default_sla_hour
 (7, 'Lighting problems', 'lighting', 'sun', 'medium', 48),
 (8, 'General infrastructure problems', 'general-infrastructure', 'building', 'low', 96);
 
-INSERT INTO reports (id, tracking_code, student_id, category_id, facility_id, room_number, title, description, priority, status, deadline, created_at) VALUES
-(1, 'FTC-2026-10001', 3, 1, 1, 'Lab E-204', 'Burned wall socket', 'The wall socket near workbench 4 sparks when a test bench is powered on.', 'critical', 'IN PROGRESS', DATE_ADD(NOW(), INTERVAL 12 HOUR), DATE_SUB(NOW(), INTERVAL 1 DAY)),
-(2, 'FTC-2026-10002', 3, 7, 2, '2nd Floor Study Pod', 'Flickering ceiling light', 'The light above carrels 14-20 flickers continuously and buzzes.', 'medium', 'RESOLVED', DATE_SUB(NOW(), INTERVAL 6 HOUR), DATE_SUB(NOW(), INTERVAL 2 DAY)),
-(3, 'FTC-2026-10003', 3, 5, 1, 'Ground Floor Restroom', 'Leaking tap', 'The left washbasin tap will not shut off completely and water pools on the floor.', 'high', 'REPORTED', NULL, DATE_SUB(NOW(), INTERVAL 2 HOUR));
+INSERT INTO reports (id, tracking_code, student_id, category_id, facility_id, room_number, title, description, priority, status, deadline, resolved_at, created_at) VALUES
+(1, 'FTC-2026-10001', 3, 1, 1, 'Lab E-204', 'Burned wall socket', 'The wall socket near workbench 4 sparks when a test bench is powered on.', 'critical', 'IN PROGRESS', DATE_ADD(NOW(), INTERVAL 12 HOUR), NULL, DATE_SUB(NOW(), INTERVAL 1 DAY)),
+(2, 'FTC-2026-10002', 3, 7, 2, '2nd Floor Study Pod', 'Flickering ceiling light', 'The light above carrels 14-20 flickers continuously and buzzes.', 'medium', 'RESOLVED', DATE_SUB(NOW(), INTERVAL 6 HOUR), DATE_SUB(NOW(), INTERVAL 6 HOUR), DATE_SUB(NOW(), INTERVAL 2 DAY)),
+(3, 'FTC-2026-10003', 3, 5, 1, 'Ground Floor Restroom', 'Leaking tap', 'The left washbasin tap will not shut off completely and water pools on the floor.', 'high', 'REPORTED', NULL, NULL, DATE_SUB(NOW(), INTERVAL 2 HOUR));
 
-UPDATE reports SET resolved_at = DATE_SUB(NOW(), INTERVAL 6 HOUR) WHERE id = 2;
-
-INSERT INTO assignments (id, report_id, technician_id, assigned_by, assignment_notes, assigned_at, status) VALUES
-(1, 1, 2, 1, 'Replace the damaged socket and test the circuit.', DATE_SUB(NOW(), INTERVAL 20 HOUR), 'in_progress'),
-(2, 2, 2, 1, 'Replace the faulty LED driver.', DATE_SUB(NOW(), INTERVAL 2 DAY), 'completed');
-UPDATE assignments SET completed_at = DATE_SUB(NOW(), INTERVAL 6 HOUR) WHERE id = 2;
+INSERT INTO assignments (id, report_id, technician_id, assigned_by, assignment_notes, assigned_at, completed_at, status) VALUES
+(1, 1, 2, 1, 'Replace the damaged socket and test the circuit.', DATE_SUB(NOW(), INTERVAL 20 HOUR), NULL, 'in_progress'),
+(2, 2, 2, 1, 'Replace the faulty LED driver.', DATE_SUB(NOW(), INTERVAL 2 DAY), DATE_SUB(NOW(), INTERVAL 6 HOUR), 'completed');
 
 INSERT INTO status_history (report_id, changed_by, old_status, new_status, notes, created_at) VALUES
 (1, 3, NULL, 'REPORTED', 'Issue reported.', DATE_SUB(NOW(), INTERVAL 1 DAY)),
