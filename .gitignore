@@ -1,0 +1,22 @@
+# User-uploaded files (keep the security policy tracked)
+/uploads/*
+!/uploads/.htaccess
+!/uploads/evidence/
+!/uploads/completion/
+/uploads/evidence/*
+/uploads/completion/*
+!/uploads/evidence/.gitkeep
+!/uploads/completion/.gitkeep
+
+# Environment & local config
+.env
+*.local.php
+
+# Logs / caches / OS files
+*.log
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

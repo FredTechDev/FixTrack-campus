@@ -1,0 +1,18 @@
+# FixTrack Campus - Security Policy for Uploads
+# Prevent execution of any scripts in the uploads directory
+
+# Disable script execution
+<FilesMatch "\.(php|phtml|php3|php4|php5|php7|php8|phps|phar|pl|py|cgi|sh|bash)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# Enforce mime types and download/inline display
+<IfModule mod_mime.c>
+    RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8 .phar
+    AddType image/jpeg .jpg .jpeg
+    AddType image/png .png
+    AddType image/webp .webp
+</IfModule>
+
+Options -ExecCGI -Indexes

@@ -1,0 +1,42 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: fixtrack_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: fixtrack_root_secret
+      MYSQL_DATABASE: fixtrack_db
+      MYSQL_USER: fixtrack_user
+      MYSQL_PASSWORD: fixtrack_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pfixtrack_root_secret"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    container_name: fixtrack_web
+    restart: unless-stopped
+    ports:
+      - "8085:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: fixtrack_db
+      DB_USER: fixtrack_user
+      DB_PASS: fixtrack_password
+      APP_ENV: development
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
