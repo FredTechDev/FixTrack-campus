@@ -124,6 +124,7 @@ An executable subset lives in [`tests/smoke_test.sh`](tests/smoke_test.sh).
 | G6 | Guest reopens closed issue | Reason required, status `IN PROGRESS`, history records it | PASS |
 | G7 | Guest report in admin list / export | Shown with "Guest" badge; CSV `Is Guest = yes`; no PHP warnings | PASS |
 | G8 | Staff actions on guest report | No notification attempted for `student_id = NULL` | PASS |
+| G9 | Register with the guest email | Guest reports linked to new account (`is_guest=0`, token cleared); old private link invalid; reports appear on student dashboard | PASS |
 
 ---
 

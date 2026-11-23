@@ -21,6 +21,7 @@ A full-stack **Campus Facilities & Maintenance Management System** built with pl
 - Receive a tracking code plus a **private link** (unguessable token) on a printable receipt.
 - Check status, see the full history and photos, verify the repair or reopen it — all through that private link.
 - Guest reports appear in the admin/technician workflow with a "Guest" badge.
+- Register later with the same email and those reports are automatically linked to the new account (their private links stop working once claimed).
 
 ### Administrators
 - Operations dashboard: totals, unassigned, active, overdue, resolved, awaiting closure.

@@ -47,6 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$errors) {
         try {
+            $pdo->beginTransaction();
+
             $stmt = $pdo->prepare("
                 INSERT INTO users (full_name, email, password_hash, role, phone, identifier, is_active)
                 VALUES (?, ?, ?, 'student', ?, ?, 1)
@@ -58,9 +60,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $old['phone'] !== '' ? $old['phone'] : null,
                 $old['identifier'] !== '' ? $old['identifier'] : null,
             ]);
-            set_flash('success', 'Account created successfully. You can now sign in and submit reports.');
+            $userId = (int)$pdo->lastInsertId();
+
+            // Link any reports this person submitted earlier as a guest with the same email.
+            $claim = $pdo->prepare("
+                UPDATE reports
+                SET student_id = ?, is_guest = 0, guest_name = NULL, guest_email = NULL, guest_token = NULL
+                WHERE is_guest = 1 AND guest_email IS NOT NULL AND LOWER(guest_email) = LOWER(?)
+            ");
+            $claim->execute([$userId, $old['email']]);
+            $claimed = $claim->rowCount();
+
+            if ($claimed) {
+                // Photos from those reports were attributed to the system account; move them to the owner.
+                $pdo->prepare("
+                    UPDATE report_images SET uploaded_by = ?
+                    WHERE report_id IN (SELECT id FROM reports WHERE student_id = ?)
+                ")->execute([$userId, $userId]);
+            }
+
+            $pdo->commit();
+            $message = 'Account created successfully. You can now sign in.';
+            if ($claimed) $message .= ' ' . (int)$claimed . ' guest report' . ($claimed === 1 ? '' : 's') . ' linked to your account.';
+            set_flash('success', $message);
             redirect('login.php');
-        } catch (PDOException $ex) {
+        } catch (Throwable $ex) {
+            if ($pdo->inTransaction()) $pdo->rollBack();
             $errors[] = 'We could not create your account. Please try again.';
         }
     }

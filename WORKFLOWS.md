@@ -56,6 +56,8 @@ Code paths use `__DIR__`, so `actions/x.php` reaches helpers via `../includes/bo
 
 **Evidence:** live run — guest POST returned `302` to the receipt with code `FTC-2026-73167` and a 48-char token; receipt and tracking pages returned 200 with no PHP warnings; a bad token did not reveal the report. Full cycle observed: `REPORTED → APPROVED → ASSIGNED → IN PROGRESS → RESOLVED → VERIFIED → CLOSED → IN PROGRESS`, with `student_id = NULL` and `is_guest = 1` in the final row. Export contains an `Is Guest` column with value `yes`.
 
+**Claiming later:** registering with the same email runs one `UPDATE` in `register.php` that sets `student_id`, clears `is_guest` and the token, and moves any guest photos to the new owner. Verified: report moved from `student_id = NULL / is_guest = 1` to the new account with `guest_token = NULL`; the old private link then showed "Invalid or expired link", and the report appeared on the student dashboard.
+
 ---
 
 ## 3. Admin reviews (approve / under review / reject)

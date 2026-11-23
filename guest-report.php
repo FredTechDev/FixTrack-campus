@@ -75,7 +75,7 @@ include __DIR__ . '/includes/header.php';
             <a class="btn btn-outline btn-lg" href="<?= e(url('index.php')) ?>">Cancel</a>
         </div>
         <aside><div class="card"><div class="card-body"><div class="info-note">
-            <i class="fas fa-key mr-2"></i>After submitting you'll receive a <strong>tracking code</strong> and a <strong>private link</strong>. Save that link — it's the only way to check progress or confirm the repair without an account.
+            <i class="fas fa-key mr-2"></i>After submitting you'll receive a <strong>tracking code</strong> and a <strong>private link</strong>. Save that link — it's the only way to check progress or confirm the repair without an account. Register later with the same email and your guest reports will be linked to your account.
         </div></div></div></aside>
     </div>
 </form>
