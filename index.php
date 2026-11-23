@@ -36,7 +36,7 @@ include __DIR__ . '/includes/header.php';
 </section>
 
 <section class="section" style="text-align:center">
-    <a href="<?= e(url('register.php')) ?>" class="btn btn-primary btn-lg">Create your free account</a>
+    <a href="<?= e(url('register.php')) ?>" class="btn btn-primary btn-lg">Create account</a>
 </section>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>
