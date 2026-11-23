@@ -170,6 +170,7 @@ fixtrack-campus/
 ├── index.php / login.php / register.php / logout.php / dashboard.php
 ├── Dockerfile / docker-compose.yml
 ├── ARCHITECTURE.md                # Modularity, module map, request flows
+├── WORKFLOWS.md                   # All workflows end to end with evidence
 ├── TESTING.md                     # Test cases (success + failure)
 └── README.md
 ```
@@ -239,7 +240,7 @@ http://localhost:8085/student/report-new.php?facility=3
 
 ## 11. Testing
 
-For how the code is split into modules and why, see **[ARCHITECTURE.md](ARCHITECTURE.md)**.
+For how the code is split into modules and why, see **[ARCHITECTURE.md](ARCHITECTURE.md)**. For every workflow from login to verification with code paths and evidence, see **[WORKFLOWS.md](WORKFLOWS.md)**.
 
 See **[TESTING.md](TESTING.md)** for a detailed matrix of successful and unsuccessful test cases, plus an automated smoke script in `tests/smoke_test.sh`.
 
