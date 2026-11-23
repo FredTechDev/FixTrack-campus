@@ -336,18 +336,33 @@ function get_report(PDO $pdo, int $report_id): ?array {
         SELECT r.*,
                c.name AS category_name, c.slug AS category_slug, c.icon AS category_icon,
                f.name AS facility_name, f.building_code, f.campus_zone,
-               u.full_name AS student_name, u.email AS student_email, u.phone AS student_phone,
-               u.identifier AS student_identifier
+               COALESCE(u.full_name, r.guest_name) AS student_name,
+               COALESCE(u.email, r.guest_email) AS student_email,
+               COALESCE(u.phone, '') AS student_phone,
+               COALESCE(u.identifier, '') AS student_identifier
         FROM reports r
         JOIN categories c ON c.id = r.category_id
         JOIN facilities f ON f.id = r.facility_id
-        JOIN users u ON u.id = r.student_id
+        LEFT JOIN users u ON u.id = r.student_id
         WHERE r.id = ?
         LIMIT 1
     ");
     $stmt->execute([$report_id]);
     $row = $stmt->fetch();
     return $row ?: null;
+}
+
+/**
+ * Fetch a guest report by its tracking code + private token.
+ */
+function get_guest_report(PDO $pdo, string $code, string $token): ?array {
+    if (!preg_match('/^FTC-[0-9]{4}-[0-9]{5}$/', $code) || !preg_match('/^[a-f0-9]{48}$/', $token)) {
+        return null;
+    }
+    $stmt = $pdo->prepare("SELECT id FROM reports WHERE tracking_code = ? AND guest_token = ? AND is_guest = 1 LIMIT 1");
+    $stmt->execute([$code, $token]);
+    $id = $stmt->fetchColumn();
+    return $id ? get_report($pdo, (int)$id) : null;
 }
 
 /**

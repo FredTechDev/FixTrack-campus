@@ -59,20 +59,22 @@ try {
     );
     record_status_change($pdo, $report_id, $admin_id, $report['status'], $target, $historyNote);
 
-    if ($decision === 'reject') {
-        create_notification(
-            $pdo, (int)$report['student_id'], $report_id,
-            'Report rejected: ' . $report['tracking_code'],
-            'Your report was reviewed and rejected. Reason: ' . $notes,
-            'rejection'
-        );
-    } else {
-        create_notification(
-            $pdo, (int)$report['student_id'], $report_id,
-            'Report update: ' . $report['tracking_code'],
-            'Your report status changed to ' . $target . '.',
-            'status_change'
-        );
+    if (!empty($report['student_id'])) {
+        if ($decision === 'reject') {
+            create_notification(
+                $pdo, (int)$report['student_id'], $report_id,
+                'Report rejected: ' . $report['tracking_code'],
+                'Your report was reviewed and rejected. Reason: ' . $notes,
+                'rejection'
+            );
+        } else {
+            create_notification(
+                $pdo, (int)$report['student_id'], $report_id,
+                'Report update: ' . $report['tracking_code'],
+                'Your report status changed to ' . $target . '.',
+                'status_change'
+            );
+        }
     }
 
     $pdo->commit();

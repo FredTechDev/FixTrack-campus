@@ -104,7 +104,8 @@ include __DIR__ . '/includes/header.php';
         </div>
 
         <div class="auth-alt">
-            New to FixTrack? <a href="<?= e(url('register.php')) ?>"><strong>Create an account</strong></a>
+            <a href="<?= e(url('register.php')) ?>"><strong>Create an account</strong></a>
+            &middot; <a href="<?= e(url('guest-report.php')) ?>"><strong>Report as guest</strong></a>
         </div>
     </div>
 </div>

@@ -26,12 +26,14 @@ try {
     $pdo->prepare("UPDATE reports SET status = ?, closed_at = NOW() WHERE id = ?")
         ->execute([STATUS_CLOSED, $report_id]);
     record_status_change($pdo, $report_id, $admin_id, $report['status'], STATUS_CLOSED, $notes !== '' ? $notes : 'Student verification received. Ticket closed.');
-    create_notification(
-        $pdo, (int)$report['student_id'], $report_id,
-        'Report closed: ' . $report['tracking_code'],
-        'Your verified repair has been closed and archived. Thank you for using FixTrack Campus.',
-        'status_change'
-    );
+    if (!empty($report['student_id'])) {
+        create_notification(
+            $pdo, (int)$report['student_id'], $report_id,
+            'Report closed: ' . $report['tracking_code'],
+            'Your verified repair has been closed and archived. Thank you for using FixTrack Campus.',
+            'status_change'
+        );
+    }
     $pdo->commit();
     set_flash('success', 'Report closed successfully.');
 } catch (Throwable $ex) {

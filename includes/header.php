@@ -49,9 +49,8 @@ if ($role === ROLE_STUDENT) {
     ];
 } else {
     $nav_links = [
-        'home'    => ['Home',     'index.php',     'house'],
-        'features'=> ['Features', 'index.php#features', 'list-check'],
-        'about'   => ['About',    'index.php#about', 'circle-info'],
+        'home' => ['Home', 'index.php', 'house'],
+        'guest' => ['Report as Guest', 'guest-report.php', 'paper-plane'],
     ];
 }
 ?>

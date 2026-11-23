@@ -15,9 +15,10 @@ $overdue    = (int)$pdo->query("SELECT COUNT(*) FROM reports WHERE deadline<NOW(
 $resolved   = (int)$pdo->query("SELECT COUNT(*) FROM reports WHERE status IN ('RESOLVED','VERIFIED','CLOSED')")->fetchColumn();
 
 $reports = $pdo->query("
-    SELECT r.*, c.name AS category_name, f.name AS facility_name, u.full_name AS reporter
+    SELECT r.*, c.name AS category_name, f.name AS facility_name,
+           COALESCE(u.full_name, r.guest_name) AS reporter, r.is_guest
     FROM reports r JOIN categories c ON c.id=r.category_id
-    JOIN facilities f ON f.id=r.facility_id JOIN users u ON u.id=r.student_id
+    JOIN facilities f ON f.id=r.facility_id LEFT JOIN users u ON u.id=r.student_id
     ORDER BY r.updated_at DESC LIMIT 10
 ")->fetchAll();
 
@@ -51,7 +52,7 @@ include __DIR__ . '/../includes/header.php';
         <?php foreach ($reports as $r): ?><tr>
             <td class="tracking-code"><?= e($r['tracking_code']) ?></td>
             <td><strong><?= e($r['title']) ?></strong><div class="x-small text-muted"><?= e($r['facility_name']) ?></div></td>
-            <td class="small"><?= e($r['reporter']) ?></td>
+            <td class="small"><?= e($r['reporter']) ?><?php if ($r['is_guest']): ?> <span class="badge badge-soft">Guest</span><?php endif; ?></td>
             <td><?= format_priority_badge($r['priority']) ?></td>
             <td><?= format_status_badge($r['status']) ?></td>
             <td class="small text-muted nowrap"><?= e(time_ago($r['updated_at'])) ?></td>

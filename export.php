@@ -35,14 +35,14 @@ $stmt = $pdo->prepare("
     SELECT r.tracking_code, r.title, r.description, r.priority, r.status, r.room_number,
            r.deadline, r.created_at, r.updated_at, r.resolved_at, r.closed_at,
            c.name AS category, f.name AS facility, f.building_code,
-           u.full_name AS reporter,
+           COALESCE(u.full_name, r.guest_name) AS reporter, r.is_guest,
            (SELECT t.full_name FROM assignments a JOIN users t ON t.id = a.technician_id
             WHERE a.report_id = r.id AND a.status <> 'reassigned'
             ORDER BY a.assigned_at DESC LIMIT 1) AS technician
     FROM reports r
     JOIN categories c ON c.id = r.category_id
     JOIN facilities f ON f.id = r.facility_id
-    JOIN users u ON u.id = r.student_id
+    LEFT JOIN users u ON u.id = r.student_id
     WHERE " . implode(' AND ', $where) . "
     ORDER BY r.created_at DESC
 ");
@@ -66,14 +66,14 @@ $out = fopen('php://output', 'w');
 fwrite($out, "\xEF\xBB\xBF"); // UTF-8 BOM for Excel
 fputcsv($out, [
     'Tracking Code', 'Title', 'Description', 'Category', 'Facility', 'Building Code',
-    'Room / Location', 'Priority', 'Status', 'Reporter', 'Technician',
+    'Room / Location', 'Priority', 'Status', 'Reporter', 'Is Guest', 'Technician',
     'Created', 'Deadline', 'Resolved', 'Closed', 'Last Updated'
 ]);
 foreach ($rows as $r) {
     fputcsv($out, array_map('csv_cell', [
         $r['tracking_code'], $r['title'], $r['description'], $r['category'],
         $r['facility'], $r['building_code'], $r['room_number'], $r['priority'],
-        $r['status'], $r['reporter'], $r['technician'], $r['created_at'],
+        $r['status'], $r['reporter'], $r['is_guest'] ? 'yes' : 'no', $r['technician'], $r['created_at'],
         $r['deadline'], $r['resolved_at'], $r['closed_at'], $r['updated_at'],
     ]));
 }

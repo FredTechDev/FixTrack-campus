@@ -59,7 +59,11 @@ CREATE TABLE categories (
 CREATE TABLE reports (
     id INT AUTO_INCREMENT PRIMARY KEY,
     tracking_code VARCHAR(30) NOT NULL UNIQUE,
-    student_id INT NOT NULL,
+    student_id INT NULL,                       -- NULL for guest reports
+    guest_name VARCHAR(100) NULL,
+    guest_email VARCHAR(150) NULL,
+    guest_token VARCHAR(64) NULL UNIQUE,       -- private link for guests
+    is_guest TINYINT(1) NOT NULL DEFAULT 0,
     category_id INT NOT NULL,
     facility_id INT NOT NULL,
     room_number VARCHAR(100) NOT NULL,

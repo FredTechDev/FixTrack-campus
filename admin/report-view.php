@@ -41,7 +41,9 @@ include __DIR__ . '/../includes/header.php';
             <h1 style="font-size:1.6rem"><?= e($report['title']) ?></h1>
             <div class="text-muted small mt-1">
                 <i class="fas fa-building mr-1"></i><?= e($report['facility_name']) ?> &middot; <?= e($report['room_number']) ?> &middot;
-                Reported by <?= e($report['student_name']) ?> <?= e(time_ago($report['created_at'])) ?>
+                Reported by <?= e($report['student_name']) ?>
+                <?php if ($report['is_guest']): ?><span class="badge badge-soft">Guest report</span><?php endif; ?>
+                <?= e(time_ago($report['created_at'])) ?>
             </div>
         </div>
         <div class="d-flex gap-2">

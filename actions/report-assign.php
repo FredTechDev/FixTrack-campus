@@ -67,12 +67,14 @@ try {
         'You have been assigned "' . $report['title'] . '" at ' . $report['facility_name'] . ' (' . $report['room_number'] . ').',
         'assignment'
     );
-    create_notification(
-        $pdo, (int)$report['student_id'], $report_id,
-        'Technician assigned: ' . $report['tracking_code'],
-        'Your issue has been assigned to ' . $tech['full_name'] . '. Target completion: ' . $deadlineHours . ' hours.',
-        'assignment'
-    );
+    if (!empty($report['student_id'])) {
+        create_notification(
+            $pdo, (int)$report['student_id'], $report_id,
+            'Technician assigned: ' . $report['tracking_code'],
+            'Your issue has been assigned to ' . $tech['full_name'] . '. Target completion: ' . $deadlineHours . ' hours.',
+            'assignment'
+        );
+    }
 
     $pdo->commit();
     set_flash('success', 'Job assigned to ' . $tech['full_name'] . '.');

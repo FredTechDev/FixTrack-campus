@@ -16,6 +16,12 @@ A full-stack **Campus Facilities & Maintenance Management System** built with pl
 - Verify repairs with a star rating, or reopen an unsuccessful/closed issue with a reason.
 - Search, filter, sort and export their own reports to CSV.
 
+### Guest (no account)
+- Report a damaged facility straight from a QR poster or the public site — no registration needed.
+- Receive a tracking code plus a **private link** (unguessable token) on a printable receipt.
+- Check status, see the full history and photos, verify the repair or reopen it — all through that private link.
+- Guest reports appear in the admin/technician workflow with a "Guest" badge.
+
 ### Administrators
 - Operations dashboard: totals, unassigned, active, overdue, resolved, awaiting closure.
 - Review, approve or reject reports (rejection requires an explanation).
@@ -140,6 +146,9 @@ fixtrack-campus/
 │   └── vendor/                    # Vendored Font Awesome + qrcodejs
 ├── actions/                       # POST-only form handlers (one per operation)
 │   ├── report-create.php
+│   ├── guest-report-create.php
+│   ├── guest-verify.php
+│   ├── guest-reopen.php
 │   ├── report-review.php
 │   ├── report-assign.php
 │   ├── report-priority.php
@@ -167,6 +176,7 @@ fixtrack-campus/
 ├── uploads/                       # Evidence & completion images (.htaccess blocks scripts)
 ├── database.sql                   # Full schema + seed data
 ├── export.php                     # Role-scoped CSV export
+├── guest-report.php / guest-receipt.php / track.php
 ├── index.php / login.php / register.php / logout.php / dashboard.php
 ├── Dockerfile / docker-compose.yml
 ├── ARCHITECTURE.md                # Modularity, module map, request flows
@@ -184,7 +194,7 @@ fixtrack-campus/
 | `users` | All accounts with role, contact details, activation flag and hashed password |
 | `facilities` | Campus buildings, codes, zones, floors |
 | `categories` | The 8 issue categories with default priority/SLA |
-| `reports` | Core tickets: tracking code, location, priority, status, deadline, timestamps |
+| `reports` | Core tickets: tracking code, location, priority, status, deadline, timestamps. `student_id` is nullable; guest reports store `guest_name`, `guest_email`, `guest_token` and `is_guest` instead |
 | `report_images` | Evidence and completion photos linked to reports and uploader |
 | `assignments` | Technician assignments, notes, status and completion time |
 | `status_history` | Immutable audit trail of every status transition |
@@ -207,7 +217,7 @@ Relationships use `InnoDB` foreign keys with `CASCADE` / `RESTRICT` / `SET NULL`
 - **Server-side validation** of every field; JavaScript validation is UX only and never trusted.
 - **Output escaping** with `htmlspecialchars()` for all dynamic HTML output.
 - **Upload validation**: real MIME detection with `finfo`, extension allow-list, 5 MB size limit, randomized filenames, and `uploads/.htaccess` that blocks script execution and directory listing.
-- **Ownership checks**: students can only see their own reports; technicians only jobs assigned to them.
+- **Ownership checks**: students can only see their own reports; technicians only jobs assigned to them; guests need both the tracking code and their 48-character private token.
 - **Restricted transitions**: the workflow map rejects illegal status jumps.
 - **Formula-injection neutralisation** in CSV exports.
 - **Login throttling** (session-based) to slow brute-force attempts.
@@ -223,6 +233,7 @@ Relationships use `InnoDB` foreign keys with `CASCADE` / `RESTRICT` / `SET NULL`
 4. Back as **Alice** → open the report → **Verify this repair** (rate it) or mark it unsatisfied to reopen.
 5. As **admin**, close verified reports from the report page.
 6. Explore **Analytics**, **People**, **Facilities**, **Categories**, **QR Codes** and **Export CSV** from the admin navigation.
+7. **Guest:** from the landing page, login page or a QR poster open **Report as Guest**, fill in the form, then save the private link from the receipt. Use that link to follow progress, verify the repair or reopen it — no account needed.
 
 ---
 
@@ -231,10 +242,10 @@ Relationships use `InnoDB` foreign keys with `CASCADE` / `RESTRICT` / `SET NULL`
 `admin/qr-codes.php` renders a QR code for each active facility. Each code encodes an absolute URL such as:
 
 ```
-http://localhost:8085/student/report-new.php?facility=3
+http://localhost:8085/guest-report.php?facility=3
 ```
 
-`student/report-new.php` reads `facility` and `category` query parameters and pre-selects them. `qr/facility.php?id=N` produces a printable labelled poster, and `qr/report.php` is a public hub listing all facilities.
+So a passer-by can report damage without an account. `guest-report.php` reads `facility` and `category` query parameters and pre-selects them; the poster also links to the account version of the form. `qr/facility.php?id=N` produces a printable labelled poster, and `qr/report.php` is a public hub listing all facilities.
 
 ---
 

@@ -53,7 +53,7 @@ login "$S" 'alice.student@fixtrack.campus' 'Student@123'
 login "$T" 'tech.electrical@fixtrack.campus' 'Tech@123'
 
 echo "==> Public pages"
-for p in index.php login.php register.php; do check_page '' "$p"; done
+for p in index.php login.php register.php guest-report.php; do check_page '' "$p"; done
 
 echo "==> Student pages"
 for p in student/dashboard.php student/reports.php student/report-new.php \

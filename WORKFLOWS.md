@@ -40,6 +40,24 @@ Code paths use `__DIR__`, so `actions/x.php` reaches helpers via `../includes/bo
 
 ---
 
+## 2b. Guest reports (no account)
+
+| Step | Detail |
+|---|---|
+| 1 | Open `guest-report.php` from the landing page, login page or a QR poster (`?facility=N` pre-selects the building). |
+| 2 | Form asks for name, optional email, issue details, priority and photos. CSRF token still required. |
+| 3 | POST → `actions/guest-report-create.php` → `require_post()` (no role check — this endpoint is public). |
+| 4 | Same server validation and upload checks as student reports. |
+| 5 | Generates `bin2hex(random_bytes(24))` (48 hex chars) as `guest_token`; INSERT report with `student_id = NULL`, `is_guest = 1`, guest name/email; history + admin notifications. |
+| 6 | Redirect to `guest-receipt.php?code=…&token=…` showing the tracking code and a **private tracking link**. |
+| 7 | `track.php` validates code **and** token through `get_guest_report()` — no session, no account. Shows details, stepper, history and photos. |
+| 8 | When `RESOLVED`, `actions/guest-verify.php` records the rating/feedback in history and moves to `VERIFIED` or back to `IN PROGRESS`. When `VERIFIED`/`CLOSED`, `actions/guest-reopen.php` reopens with a reason. |
+| 9 | Staff workflow is unchanged: `get_report()` uses `LEFT JOIN users` + `COALESCE(u.full_name, r.guest_name)`, admin lists show a "Guest" badge, and notifications to a non-existent student are skipped. |
+
+**Evidence:** live run — guest POST returned `302` to the receipt with code `FTC-2026-73167` and a 48-char token; receipt and tracking pages returned 200 with no PHP warnings; a bad token did not reveal the report. Full cycle observed: `REPORTED → APPROVED → ASSIGNED → IN PROGRESS → RESOLVED → VERIFIED → CLOSED → IN PROGRESS`, with `student_id = NULL` and `is_guest = 1` in the final row. Export contains an `Is Guest` column with value `yes`.
+
+---
+
 ## 3. Admin reviews (approve / under review / reject)
 
 | Step | Detail |

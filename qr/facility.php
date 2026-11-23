@@ -17,7 +17,7 @@ if (!$facility) {
     set_flash('error', 'Facility not found.');
     redirect('qr/report.php');
 }
-$target = url('student/report-new.php?facility=' . (int)$facility['id']);
+$target = url('guest-report.php?facility=' . (int)$facility['id']);
 
 $page_title = 'QR label - ' . $facility['name'];
 $active_nav = '';
@@ -34,8 +34,9 @@ include __DIR__ . '/../includes/header.php';
         <p class="text-muted"><?= e($facility['building_code']) ?> &middot; <?= e($facility['campus_zone']) ?></p>
         <div data-qr-url="<?= e($target) ?>" data-qr-size="240" style="display:inline-block;margin:1.5rem 0"></div>
         <h2 style="font-size:1.2rem">Something broken here?</h2>
-        <p class="text-muted small">Scan this code with your phone camera to report a maintenance issue in this building.</p>
-        <a class="btn btn-primary btn-lg mt-3" href="<?= e($target) ?>"><i class="fas fa-qrcode mr-2"></i>Open report form</a>
+        <p class="text-muted small">Scan with your phone camera to report a problem here — no account needed. Save the private link you receive to track the repair.</p>
+        <a class="btn btn-primary btn-lg mt-3" href="<?= e($target) ?>"><i class="fas fa-qrcode mr-2"></i>Report an issue</a>
+        <div class="mt-2"><a class="btn btn-outline btn-sm" href="<?= e(url('student/report-new.php?facility=' . (int)$facility['id'])) ?>">I have an account</a></div>
         <div class="x-small text-muted mt-4 text-break"><?= e($target) ?></div>
     </div>
 </div>

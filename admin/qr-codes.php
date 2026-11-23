@@ -27,7 +27,7 @@ include __DIR__ . '/../includes/header.php';
 
 <div class="qr-grid">
     <?php foreach ($facilities as $f): ?>
-        <?php $target = url('student/report-new.php?facility=' . (int)$f['id']); ?>
+        <?php $target = url('guest-report.php?facility=' . (int)$f['id']); ?>
         <div class="qr-card">
             <div data-qr-url="<?= e($target) ?>" data-qr-size="170" style="display:inline-block"></div>
             <h3><?= e($f['name']) ?></h3>
@@ -43,7 +43,7 @@ include __DIR__ . '/../includes/header.php';
         <p class="small text-muted">You can also link straight to a specific category form, for example:</p>
         <ul class="small">
             <?php foreach (array_slice($categories, 0, 4) as $c): ?>
-                <li class="mb-1"><strong><?= e($c['name']) ?>:</strong> <span class="text-break"><?= e(url('student/report-new.php?category=' . (int)$c['id'])) ?></span></li>
+                <li class="mb-1"><strong><?= e($c['name']) ?>:</strong> <span class="text-break"><?= e(url('guest-report.php?category=' . (int)$c['id'])) ?></span></li>
             <?php endforeach; ?>
         </ul>
     </div>

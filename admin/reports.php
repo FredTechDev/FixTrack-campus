@@ -29,14 +29,14 @@ if (array_key_exists($priority, PRIORITIES)) { $where[] = 'r.priority = ?'; $par
 if ($tech > 0) { $where[] = 'EXISTS (SELECT 1 FROM assignments ax WHERE ax.report_id = r.id AND ax.technician_id = ? AND ax.status <> \'reassigned\')'; $params[] = $tech; }
 if ($overdue) { $where[] = "r.deadline < NOW() AND r.status NOT IN ('RESOLVED','VERIFIED','CLOSED','REJECTED')"; }
 if ($q !== '') {
-    $where[] = '(r.title LIKE ? OR r.tracking_code LIKE ? OR r.description LIKE ? OR u.full_name LIKE ?)';
+    $where[] = '(r.title LIKE ? OR r.tracking_code LIKE ? OR r.description LIKE ? OR COALESCE(u.full_name, r.guest_name) LIKE ?)';
     $like = '%' . $q . '%';
     array_push($params, $like, $like, $like, $like);
 }
 $whereSql = implode(' AND ', $where);
 
 $countStmt = $pdo->prepare("SELECT COUNT(*) FROM reports r
-    JOIN users u ON u.id = r.student_id WHERE $whereSql");
+    LEFT JOIN users u ON u.id = r.student_id WHERE $whereSql");
 $countStmt->execute($params);
 $totalRows = (int)$countStmt->fetchColumn();
 $pages = max(1, (int)ceil($totalRows / $perPage));
@@ -44,14 +44,15 @@ $page = min($page, $pages);
 $offset = ($page - 1) * $perPage;
 
 $stmt = $pdo->prepare("
-    SELECT r.*, c.name AS category_name, f.name AS facility_name, u.full_name AS student_name,
+    SELECT r.*, c.name AS category_name, f.name AS facility_name,
+           COALESCE(u.full_name, r.guest_name) AS student_name,
            (SELECT t.full_name FROM assignments a JOIN users t ON t.id = a.technician_id
             WHERE a.report_id = r.id AND a.status <> 'reassigned'
             ORDER BY a.assigned_at DESC LIMIT 1) AS technician_name
     FROM reports r
     JOIN categories c ON c.id = r.category_id
     JOIN facilities f ON f.id = r.facility_id
-    JOIN users u ON u.id = r.student_id
+    LEFT JOIN users u ON u.id = r.student_id
     WHERE $whereSql
     ORDER BY FIELD(r.priority,'critical','high','medium','low') ASC, r.updated_at DESC
     LIMIT $perPage OFFSET $offset
@@ -120,7 +121,7 @@ $exportQuery = aq();
             <tr>
                 <td class="tracking-code"><?= e($r['tracking_code']) ?></td>
                 <td><strong><?= e(mb_substr($r['title'], 0, 48)) ?></strong><div class="x-small text-muted"><?= e($r['facility_name']) ?> &middot; <?= e($r['room_number']) ?></div></td>
-                <td class="small"><?= e($r['student_name']) ?></td>
+                <td class="small"><?= e($r['student_name']) ?><?php if ($r['is_guest']): ?> <span class="badge badge-soft">Guest</span><?php endif; ?></td>
                 <td class="small"><?= e($r['category_name']) ?></td>
                 <td><?= format_priority_badge($r['priority']) ?></td>
                 <td><?= format_status_badge($r['status']) ?><?php if (is_overdue($r['deadline'], $r['status'])): ?><div class="mt-1"><span class="badge badge-overdue">Overdue</span></div><?php endif; ?></td>

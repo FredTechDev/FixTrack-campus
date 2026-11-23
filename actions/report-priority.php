@@ -36,7 +36,9 @@ try {
     }
     $note = 'Priority updated to ' . ucfirst($priority) . ($deadlineHours > 0 ? ' with a ' . $deadlineHours . '-hour deadline' : '') . '.';
     record_status_change($pdo, $report_id, $admin_id, $report['status'], $report['status'], $note);
-    create_notification($pdo, (int)$report['student_id'], $report_id, 'Priority updated: ' . $report['tracking_code'], $note, 'status_change');
+    if (!empty($report['student_id'])) {
+        create_notification($pdo, (int)$report['student_id'], $report_id, 'Priority updated: ' . $report['tracking_code'], $note, 'status_change');
+    }
     $pdo->commit();
     set_flash('success', $note);
 } catch (Throwable $ex) {

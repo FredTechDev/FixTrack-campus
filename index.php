@@ -22,6 +22,7 @@ include __DIR__ . '/includes/header.php';
     <div class="hero-actions">
         <a href="<?= e(url('register.php')) ?>" class="btn btn-lg btn-light"><i class="fas fa-paper-plane mr-2"></i>Report an issue</a>
         <a href="<?= e(url('login.php')) ?>" class="btn btn-lg btn-ghost"><i class="fas fa-right-to-bracket mr-2"></i>Sign in</a>
+        <a href="<?= e(url('guest-report.php')) ?>" class="btn btn-lg btn-ghost"><i class="fas fa-user-clock mr-2"></i>Report as guest</a>
     </div>
 </section>
 

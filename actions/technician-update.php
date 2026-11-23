@@ -35,7 +35,9 @@ if ($action === 'start') {
     $pdo->prepare("UPDATE assignments SET status = 'in_progress' WHERE id = ?")->execute([(int)$assignment['id']]);
     $pdo->prepare("UPDATE reports SET status = ? WHERE id = ?")->execute([STATUS_IN_PROGRESS, $report_id]);
     record_status_change($pdo, $report_id, $tech_id, $report['status'], STATUS_IN_PROGRESS, $notes);
-    create_notification($pdo, (int)$report['student_id'], $report_id, 'Work started: ' . $report['tracking_code'], $notes, 'status_change');
+    if (!empty($report['student_id'])) {
+        create_notification($pdo, (int)$report['student_id'], $report_id, 'Work started: ' . $report['tracking_code'], $notes, 'status_change');
+    }
     $pdo->commit();
     set_flash('success', 'Job marked as in progress.');
 
@@ -71,12 +73,14 @@ if ($action === 'start') {
         }
 
         record_status_change($pdo, $report_id, $tech_id, $report['status'], STATUS_RESOLVED, $notes);
-        create_notification(
-            $pdo, (int)$report['student_id'], $report_id,
-            'Repair completed - verification needed',
-            'Your issue ' . $report['tracking_code'] . ' has been marked resolved. Please verify the repair. ' . $notes,
-            'verification_needed'
-        );
+        if (!empty($report['student_id'])) {
+            create_notification(
+                $pdo, (int)$report['student_id'], $report_id,
+                'Repair completed - verification needed',
+                'Your issue ' . $report['tracking_code'] . ' has been marked resolved. Please verify the repair. ' . $notes,
+                'verification_needed'
+            );
+        }
         $admins = $pdo->query("SELECT id FROM users WHERE role = 'admin' AND is_active = 1")->fetchAll();
         foreach ($admins as $admin) {
             create_notification($pdo, (int)$admin['id'], $report_id, 'Job resolved: ' . $report['tracking_code'], $notes, 'status_change');

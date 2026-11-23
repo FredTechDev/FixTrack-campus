@@ -112,6 +112,21 @@ An executable subset lives in [`tests/smoke_test.sh`](tests/smoke_test.sh).
 
 ---
 
+## 6b. Guest reporting (no account)
+
+| # | Scenario | Expected result | Actual |
+|---|---|---|---|
+| G1 | Guest opens `guest-report.php` | 200, no login redirect | PASS |
+| G2 | Submit with name, title, category, facility, room, description | 302 to receipt, tracking code + private 48-char token | PASS |
+| G3 | Bad token in `track.php` | No report data shown | PASS |
+| G4 | Guest tracking page at `RESOLVED` | Verification form visible and works | PASS |
+| G5 | Guest verifies unsatisfied | Status returns to `IN PROGRESS`, technician + admins notified | PASS |
+| G6 | Guest reopens closed issue | Reason required, status `IN PROGRESS`, history records it | PASS |
+| G7 | Guest report in admin list / export | Shown with "Guest" badge; CSV `Is Guest = yes`; no PHP warnings | PASS |
+| G8 | Staff actions on guest report | No notification attempted for `student_id = NULL` | PASS |
+
+---
+
 ## 7. Automated smoke test
 
 With the Docker stack running:

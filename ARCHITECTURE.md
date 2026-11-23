@@ -23,6 +23,7 @@ config/  →  includes/  →  pages + actions/  →  uploads/
 | `includes/bootstrap.php` | One-line setup for action endpoints | Anything else |
 | `includes/header.php` / `footer.php` | Shared layout, role-aware nav, flash messages, assets | Business logic |
 | `student/`, `admin/`, `technician/` | **Read** data and render a page | Mutate data directly |
+| `guest-report.php`, `guest-receipt.php`, `track.php` | Public read/render for account-less reporters | Trust a tracking code alone (token required) |
 | `actions/` | **Write** data, then redirect | Render HTML |
 | `api/duplicate-check.php` | One JSON read endpoint | Mutate anything |
 | `assets/` | CSS + vanilla JS only | Know PHP |
