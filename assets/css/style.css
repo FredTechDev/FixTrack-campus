@@ -4,31 +4,32 @@
    ======================================================== */
 
 :root {
-    --primary: #1e40af;
-    --primary-hover: #1d4ed8;
-    --primary-light: #eff6ff;
-    --secondary: #475569;
-    --secondary-light: #f1f5f9;
-    --accent: #0ea5e9;
-    --success: #10b981;
-    --success-light: #ecfdf5;
-    --warning: #f59e0b;
-    --warning-light: #fffbeb;
-    --danger: #ef4444;
-    --danger-light: #fef2f2;
-    --indigo: #6366f1;
-    --indigo-light: #e0e7ff;
-    --teal: #14b8a6;
-    --teal-light: #f0fdfa;
+    /* Eye-friendly slate & indigo blend */
+    --primary: #4056a1;
+    --primary-hover: #34478a;
+    --primary-light: #eef1fa;
+    --secondary: #52627a;
+    --secondary-light: #edf1f7;
+    --accent: #5aa9c9;
+    --success: #2f9e78;
+    --success-light: #eaf7f1;
+    --warning: #cf9124;
+    --warning-light: #fdf6e8;
+    --danger: #d05a5a;
+    --danger-light: #fbeeee;
+    --indigo: #5a6bc4;
+    --indigo-light: #eef0fb;
+    --teal: #2a9d90;
+    --teal-light: #eaf7f5;
 
-    --bg-page: #f8fafc;
-    --bg-card: #ffffff;
-    --border-color: #e2e8f0;
-    --border-hover: #cbd5e1;
+    --bg-page: #e9eef6;
+    --bg-card: #f8fafd;
+    --border-color: #d9e1ed;
+    --border-hover: #b8c6d9;
 
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --text-muted: #64748b;
+    --text-primary: #1c2942;
+    --text-secondary: #4b5b74;
+    --text-muted: #6b7a92;
     --text-light: #ffffff;
 
     --radius-sm: 6px;
